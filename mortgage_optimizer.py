@@ -3,19 +3,6 @@ import datetime
 import Tkinter as TK
 from Tkinter import StringVar 
 
-# mortgage_maturity = datetime.date(2044,10,1)
-# mortgage_payment = 1923.88 - 729.74
-# mortgage_balance = 213535.32
-# mortgage_interest_rate = .04125 / 12
-# heloc_intereste_rate = .0475 / 365
-# heloc_credit_limit = -50000
-# heloc_loan_size = 10000 
-# heloc_low_limit = -2000
-# monthly_cashflow = []
-# start_date = datetime.date( datetime.date.today().year,
-#                           datetime.date.today().month,
-#                           1)
-
 class my_datetime(datetime.datetime):
     def current_month(self):
         self = datetime.date( datetime.date.today().year,
@@ -101,11 +88,11 @@ def mortgage_optimize(start_date,
     print curr_date, mortgage_balance, mortgage_interest_paid, heloc_balance, heloc_interest_paid
     return curr_date, mortgage_balance, heloc_balance
 
-def add_event():
+def add_event(date, value, freq):
     global monthly_cashflow
 
-    print "Test"
-    pass
+    print date, value, freq
+    return True
 
 if __name__ == '__main__':
     # global mortgage_maturity
@@ -119,15 +106,24 @@ if __name__ == '__main__':
     # global monthly_cashflow
     # global start_date
 
-    # monthly_cashflow = [[15,2183.08,14],
-    #                     [8,1993.15,14],
-    #                     [17,-5000,0],
-    #                     [8,-1000,0],
-    #                     [1,-2425,0]]
-
+    # mortgage_maturity = 
+    # mortgage_payment = 1923.88 - 729.74
+    # mortgage_balance = 213535.32
+    # mortgage_interest_rate = .04125 / 12
+    # heloc_intereste_rate = .0475 / 365
+    # heloc_credit_limit = -50000
+    # heloc_loan_size = 10000 
+    # heloc_low_limit = -2000
+    # monthly_cashflow = []
     # start_date = datetime.date( datetime.date.today().year,
     #                           datetime.date.today().month,
     #                           1)
+
+    monthly_cashflow = [[15,2183.08,14],
+                        [8,1993.15,14],
+                        [17,-5000,0],
+                        [8,-1000,0],
+                        [1,-2425,0]]
 
     input_screen = TK.Tk()
     input_screen.title("Mortgage Optimizer Inputs")
@@ -143,6 +139,20 @@ if __name__ == '__main__':
     heloc_low_limit = StringVar()
     monthly_cashflow = StringVar()
     start_date = StringVar()
+
+    mortgage_maturity.set(datetime.date(2044,10,1))
+    mortgage_payment.set(1923.88 - 729.74)
+    mortgage_balance.set(213535.32)
+    mortgage_interest_rate.set(.04125)
+    mortgage_extra_payment.set( 329.18)
+    heloc_intereste_rate.set(.0475)
+    heloc_credit_limit.set(-50000)
+    heloc_loan_size.set(10000)
+    heloc_low_limit.set(-2000)
+    # monthly_cashflow.set()
+    start_date.set(datetime.date( datetime.date.today().year,
+                              datetime.date.today().month,
+                              1))
 
     # mortgage_frame = TK.Frame(input_screen).grid(row=0)
     TK.Label(input_screen,text="Mortgage Balance").grid(row=0,column=0, sticky='W')
@@ -182,20 +192,24 @@ if __name__ == '__main__':
     TK.Frame(input_screen,height=10, bd=1, relief='sunken').grid(row=11)
 
     cashflow_frame = TK.Frame(input_screen,bd=9)
-    cashflow_frame.grid(row=12,column = 0, columnspan=2,sticky='WE')
+    cashflow_frame.grid(row=12,column = 0, columnspan=2,rowspan=3,sticky='WE')
     TK.Label(cashflow_frame,text="Cash Event").pack(side='left')
-    TK.Entry(cashflow_frame).pack(side='left')
-    TK.Entry(cashflow_frame).pack(side='left')
-    TK.Entry(cashflow_frame).pack(side='left')
-    TK.Button(cashflow_frame,text="Add Event",command = add_event).pack(side='left')
-
+    cf_date = TK.Entry(cashflow_frame)
+    cf_date.pack(side='left')
+    cf_value = TK.Entry(cashflow_frame)
+    cf_value.pack(side='left')
+    cf_freq = TK.Entry(cashflow_frame)
+    cf_freq.pack(side='left')
+    TK.Button(cashflow_frame,text="Add Event",command = lambda: add_event(cf_date.get(),cf_value.get(),cf_freq.get())).pack(side='left')
+    TK.Button(cashflow_frame,text="Remove Event").pack(side='bottom')
+    TK.Listbox(cashflow_frame,selectmode='single').pack(side='bottom')
     input_screen.mainloop()
 
     # for i in monthly_cashflow:
     #     i[0] = curr_date + datetime.timedelta(days=i[0]-1)
         
     # print mortgage_payoff_schedule(   curr_date, mortgage_balance, 
-    #                             mortgage_interest_rate, mortgage_payment, 329.18)
+    #                             mortgage_interest_rate, mortgage_payment,mortgage_extra_payment)
         
     # mortgage_optimize(  curr_date, 
     #                     mortgage_balance, mortgage_interest_rate, 
