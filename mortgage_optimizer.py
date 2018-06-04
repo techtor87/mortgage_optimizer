@@ -90,10 +90,29 @@ def mortgage_optimize(start_date,
     print curr_date, mortgage_balance, heloc_balance, mortgage_interest_paid + heloc_interest_paid
     return curr_date, mortgage_balance, heloc_balance
 
-def add_event(date, value, freq):
+def add_event(day_of_month, value, freq):
     global monthly_cashflow
+    global cf_list
 
-    print date, value, freq
+    monthly_cashflow.append([int(day_of_month),float(value),int(freq)])
+    
+    cf_list.delete(0,'end')
+    for i in monthly_cashflow:
+        cf_list.insert('end',i)
+
+    return True
+
+def remove_event(listbox_index):
+    global monthly_cashflow
+    global cf_list
+
+    for i in reversed(listbox_index):
+        del monthly_cashflow[i]
+
+    cf_list.delete(0,'end')
+    for i in monthly_cashflow:
+        cf_list.insert('end',i)
+        
     return True
 
 def var_update(*args):
@@ -108,34 +127,68 @@ def var_update(*args):
     global heloc_low_limit
     global monthly_cashflow
     global start_date
-  
-    # mortgage_maturity = datetime.strptime(sv_mortgage_maturity.get()strftime )
-    mortgage_payment = float(sv_mortgage_payment.get())
-    mortgage_balance = float(sv_mortgage_balance.get())
-    mortgage_interest_rate = float(sv_mortgage_interest_rate.get())
-    mortgage_extra_payment = float(sv_mortgage_extra_payment.get())
-    heloc_intereste_rate = float(sv_heloc_intereste_rate.get())
-    heloc_credit_limit = float(sv_heloc_credit_limit.get())
-    heloc_loan_size = float(sv_heloc_loan_size.get())
-    heloc_low_limit = float(sv_heloc_loan_size.get())
-    # monthly_cashflow
-    # start_date = datetime.strptime(sv_mortgage_maturity.get())
+    
+    is_change = False
+
+    # if mortgage_maturity != datetime.strptime(sv_mortgage_maturity.get()strftime ):
+        # mortgage_maturity = datetime.strptime(sv_mortgage_maturity.get()strftime )
+        # is_change = True
+
+    if mortgage_payment != float(sv_mortgage_payment.get()):
+        mortgage_payment != float(sv_mortgage_payment.get())
+        is_change = True
+
+    if mortgage_balance != float(sv_mortgage_balance.get()):
+        mortgage_balance = float(sv_mortgage_balance.get())
+        is_change = True
+
+    if mortgage_balance != float(sv_mortgage_balance.get()):
+        mortgage_balance = float(sv_mortgage_balance.get())
+        is_change = True
+
+    if mortgage_extra_payment != float(sv_mortgage_extra_payment.get()):
+        mortgage_extra_payment = float(sv_mortgage_extra_payment.get())
+        is_change = True
+
+    if heloc_intereste_rate != float(sv_heloc_intereste_rate.get()):
+        heloc_intereste_rate = float(sv_heloc_intereste_rate.get())
+        is_change = True
+
+    if heloc_credit_limit != float(sv_heloc_credit_limit.get()):
+        heloc_credit_limit = float(sv_heloc_credit_limit.get())
+        is_change = True
+
+    if heloc_loan_size != float(sv_heloc_loan_size.get()):
+        heloc_loan_size = float(sv_heloc_loan_size.get())
+        is_change = True
+
+    if heloc_low_limit != float(sv_heloc_loan_size.get()):
+        heloc_low_limit = float(sv_heloc_loan_size.get())
+        is_change = True
+
+    # if start_date = datetime.strptime(sv_mortgage_maturity.get()):
+        # start_date = datetime.strptime(sv_mortgage_maturity.get())
+        # is_change = True
+
     start_date = datetime.date( datetime.date.today().year,
                               datetime.date.today().month,
                               1)
-
+    
     for i in monthly_cashflow:
-        i[0] = start_date + datetime.timedelta(days=i[0]-1)
-        
-    mortgage_payoff_schedule(   start_date, mortgage_balance, 
-                                mortgage_interest_rate, mortgage_payment,mortgage_extra_payment)
-        
-    mortgage_optimize(  start_date, 
-                        mortgage_balance, mortgage_interest_rate, 
-                        mortgage_payment, mortgage_maturity, 
-                        heloc_credit_limit, heloc_intereste_rate, 
-                        heloc_loan_size, heloc_low_limit, 
-                        monthly_cashflow)
+        if isinstance(i[0],(int,long)):
+            i[0] = start_date + datetime.timedelta(days=i[0]-1)
+            is_change = True
+
+    if is_change:        
+        mortgage_payoff_schedule(   start_date, mortgage_balance, 
+                                    mortgage_interest_rate, mortgage_payment,mortgage_extra_payment)
+            
+        mortgage_optimize(  start_date, 
+                            mortgage_balance, mortgage_interest_rate, 
+                            mortgage_payment, mortgage_maturity, 
+                            heloc_credit_limit, heloc_intereste_rate, 
+                            heloc_loan_size, heloc_low_limit, 
+                            monthly_cashflow)
 
     return
 
@@ -144,6 +197,7 @@ if __name__ == '__main__':
     global mortgage_payment
     global mortgage_balance
     global mortgage_interest_rate
+    global mortgage_extra_payment
     global heloc_intereste_rate
     global heloc_credit_limit
     global heloc_loan_size
@@ -151,11 +205,14 @@ if __name__ == '__main__':
     global monthly_cashflow
     global start_date
 
+    global cf_list
+
     mortgage_maturity = datetime.date(2044,10,1)
     mortgage_payment = 1923.88 - 729.74
     mortgage_balance = 213535.32
-    mortgage_interest_rate = .04125 / 12
-    heloc_intereste_rate = .0475 / 365
+    mortgage_interest_rate = .04125
+    mortgage_extra_payment = 329.18
+    heloc_intereste_rate = .0475
     heloc_credit_limit = -50000
     heloc_loan_size = 10000 
     heloc_low_limit = -2000
@@ -190,7 +247,7 @@ if __name__ == '__main__':
     sv_mortgage_payment.set(mortgage_payment)
     sv_mortgage_balance.set(mortgage_balance)
     sv_mortgage_interest_rate.set(mortgage_interest_rate)
-    sv_mortgage_extra_payment.set( 329.18)
+    sv_mortgage_extra_payment.set(mortgage_extra_payment)
     sv_heloc_intereste_rate.set(heloc_intereste_rate)
     sv_heloc_credit_limit.set(heloc_credit_limit)
     sv_heloc_loan_size.set(heloc_loan_size)
@@ -257,7 +314,13 @@ if __name__ == '__main__':
     cf_freq = TK.Entry(cashflow_frame)
     cf_freq.pack(side='left')
     TK.Button(cashflow_frame,text="Add Event",command = lambda: add_event(cf_date.get(),cf_value.get(),cf_freq.get())).pack(side='left')
-    TK.Button(cashflow_frame,text="Remove Event").pack(side='bottom')
-    TK.Listbox(cashflow_frame,selectmode='single').pack(side='bottom')
+    TK.Button(cashflow_frame,text="Remove Event",command = lambda: remove_event(cf_list.curselection())).pack(side='bottom')
+    cf_list = TK.Listbox(cashflow_frame,selectmode='multiple')
+    cf_list.pack(side='bottom')
+    for i in monthly_cashflow:
+        cf_list.insert('end',i)
+
+    var_update()
+
     input_screen.mainloop()
 
