@@ -102,6 +102,7 @@ def mortgage_optimize(start_date,
     return curr_date, mortgage_balance, heloc_balance
 
 def add_event():
+    print "Test"
     pass
 
 if __name__ == '__main__':
@@ -163,7 +164,7 @@ if __name__ == '__main__':
     TK.Label(input_screen,text="HELOC Interest Rate").grid(row=6,column=0)
     TK.Entry(input_screen, textvariable=heloc_intereste_rate).grid(row=6,column=1)
 
-    TK.Label(input_screen,text="")grid(row=7,column=0)
+    TK.Label(input_screen,text="").grid(row=7,column=0)
     
     # sys_var_frame = TK.Frame(input_screen).pack()
     TK.Label(input_screen,text="HELOC Loan Size").grid(row=8,column=0)
