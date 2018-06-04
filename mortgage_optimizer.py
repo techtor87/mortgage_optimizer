@@ -102,6 +102,8 @@ def mortgage_optimize(start_date,
     return curr_date, mortgage_balance, heloc_balance
 
 def add_event():
+    global monthly_cashflow
+
     print "Test"
     pass
 
@@ -128,6 +130,7 @@ if __name__ == '__main__':
     #                           1)
 
     input_screen = TK.Tk()
+    input_screen.title("Mortgage Optimizer Inputs")
     
     mortgage_maturity = StringVar()
     mortgage_payment = StringVar()
@@ -141,49 +144,50 @@ if __name__ == '__main__':
     monthly_cashflow = StringVar()
     start_date = StringVar()
 
-    # mortgage_frame = TK.Frame(input_screen).pack()
-    TK.Label(input_screen,text="Mortgage Balance").grid(row=0,column=0)
+    # mortgage_frame = TK.Frame(input_screen).grid(row=0)
+    TK.Label(input_screen,text="Mortgage Balance").grid(row=0,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=mortgage_balance).grid(row=0,column=1)
 
-    TK.Label(input_screen,text="Mortgage Payment").grid(row=1,column=0)
+    TK.Label(input_screen,text="Mortgage Payment").grid(row=1,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=mortgage_payment).grid(row=1,column=1)
 
-    TK.Label(input_screen,text="Mortgage Maturity").grid(row=2,column=0)
+    TK.Label(input_screen,text="Mortgage Maturity").grid(row=2,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=mortgage_maturity).grid(row=2,column=1)
 
-    TK.Label(input_screen,text="Mortgage Interest Rate").grid(row=3,column=0)
+    TK.Label(input_screen,text="Mortgage Interest Rate").grid(row=3,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=mortgage_interest_rate).grid(row=3,column=1) 
     
-    TK.Label(input_screen,text="Mortgage Extra Payment").grid(row=4,column=0)
+    TK.Label(input_screen,text="Mortgage Extra Payment").grid(row=4,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=mortgage_extra_payment).grid(row=4,column=1) 
     
     # heloc_frame = TK.Frame(input_screen).pack()
-    TK.Label(input_screen,text="HELOC Credit Limit").grid(row=5,column=0)
+    TK.Label(input_screen,text="HELOC Credit Limit").grid(row=5,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=heloc_credit_limit).grid(row=5,column=1)
 
-    TK.Label(input_screen,text="HELOC Interest Rate").grid(row=6,column=0)
+    TK.Label(input_screen,text="HELOC Interest Rate").grid(row=6,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=heloc_intereste_rate).grid(row=6,column=1)
 
-    TK.Label(input_screen,text="").grid(row=7,column=0)
+    TK.Frame(input_screen,height=10, bd=1, relief='sunken').grid(row=7)
     
     # sys_var_frame = TK.Frame(input_screen).pack()
-    TK.Label(input_screen,text="HELOC Loan Size").grid(row=8,column=0)
+    TK.Label(input_screen,text="HELOC Loan Size").grid(row=8,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=heloc_loan_size).grid(row=8,column=1)
 
-    TK.Label(input_screen,text="HELOC Low Balance Limit").grid(row=9,column=0)
+    TK.Label(input_screen,text="HELOC Low Limit").grid(row=9,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=heloc_low_limit).grid(row=9,column=1)
 
-    TK.Label(input_screen,text="Start Date").grid(row=10,column=0)
+    TK.Label(input_screen,text="Start Date").grid(row=10,column=0, sticky='W')
     TK.Entry(input_screen, textvariable=start_date).grid(row=10,column=1)
 
-    TK.Label(input_screen,text="").grid(row=11,column=0)
+    TK.Frame(input_screen,height=10, bd=1, relief='sunken').grid(row=11)
 
-    # cashflow_frame = TK.Frame(input_screen).pack()
-    TK.Label(input_screen,text="Cash Event").grid(row=12,column=0)
-    TK.Entry(input_screen).grid(row=12,column=1)
-    TK.Entry(input_screen).grid(row=12,column=2)
-    TK.Entry(input_screen).grid(row=12,column=3)
-    TK.Button(input_screen,text="Add Event",command = add_event).grid(row=13,column=0)
+    cashflow_frame = TK.Frame(input_screen,bd=9)
+    cashflow_frame.grid(row=12,column = 0, columnspan=2,sticky='WE')
+    TK.Label(cashflow_frame,text="Cash Event").pack(side='left')
+    TK.Entry(cashflow_frame).pack(side='left')
+    TK.Entry(cashflow_frame).pack(side='left')
+    TK.Entry(cashflow_frame).pack(side='left')
+    TK.Button(cashflow_frame,text="Add Event",command = add_event).pack(side='left')
 
     input_screen.mainloop()
 
