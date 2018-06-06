@@ -6,6 +6,10 @@ from graph_output import *
 from input_window import *
 from financial_calculations import *
 
+seconds_per_hour = 86400
+graph_x_scale_factor = 4450
+graph_y_scale_factor = 10
+
 def add_event(day_of_month, value, freq):
     global monthly_cashflow
     global cf_list
@@ -43,15 +47,20 @@ def var_update(*args):
     global heloc_credit_limit
     global heloc_loan_size
     global heloc_low_limit
+    global heloc_low_limit
     global monthly_cashflow
     global start_date
+
+    global optimizer_output
+    global plot
+    global cf_list
     
     is_change = False
     
     for i in args:
         if i == 'run':
             is_change = True
-            print 'found run'
+            # print 'found run'
 
     # if mortgage_maturity != datetime.strptime(sv_mortgage_maturity.get()strftime ):
         # mortgage_maturity = datetime.strptime(sv_mortgage_maturity.get()strftime )
@@ -85,8 +94,8 @@ def var_update(*args):
         heloc_loan_size = float(sv_heloc_loan_size.get())
         is_change = True
 
-    if heloc_low_limit != float(sv_heloc_loan_size.get()):
-        heloc_low_limit = float(sv_heloc_loan_size.get())
+    if heloc_low_limit != float(sv_heloc_low_limit.get()):
+        heloc_low_limit = float(sv_heloc_low_limit.get())
         is_change = True
 
     # if start_date = datetime.strptime(sv_mortgage_maturity.get()):
@@ -109,14 +118,45 @@ def var_update(*args):
     if is_change:        
         mortgage_payoff_schedule(   start_date, mortgage_balance, 
                                     mortgage_interest_rate, mortgage_payment,mortgage_extra_payment)
-            
-        mortgage_optimize(  start_date, 
-                            mortgage_balance, mortgage_interest_rate, 
-                            mortgage_payment, mortgage_maturity, 
-                            heloc_credit_limit, heloc_intereste_rate, 
-                            heloc_loan_size, heloc_low_limit, 
-                            monthly_cashflow)
+        
+        optimizer_output = []
+        for i in range(int(heloc_low_limit),int(heloc_credit_limit), int( (heloc_credit_limit-heloc_low_limit)/100)):
+            optimizer_output.append(mortgage_optimize(  start_date,   
+                                mortgage_balance, mortgage_interest_rate, 
+                                mortgage_payment, mortgage_maturity, 
+                                heloc_credit_limit, heloc_intereste_rate, 
+                                -1*i, heloc_low_limit, 
+                                monthly_cashflow))
 
+        # plot.delete('all')
+        find_min = 10000
+        find_max = 0
+
+
+        for i in range(len(optimizer_output)-1):
+            tmp = (optimizer_output[i][0]-datetime.date.today()).total_seconds()/seconds_per_hour
+            if tmp < find_min:
+                find_min = tmp
+
+            if tmp > find_max:
+                find_max = tmp
+
+            print i*graph_y_scale_factor,(optimizer_output[i][0]-datetime.date.today()).total_seconds()/seconds_per_hour - graph_x_scale_factor, (i+1)*graph_y_scale_factor,(optimizer_output[i+1][0]-datetime.date.today()).total_seconds()/seconds_per_hour - graph_x_scale_factor
+
+            plot.create_line(   i*graph_y_scale_factor,
+                                (optimizer_output[i][0]-datetime.date.today()).total_seconds()/seconds_per_hour - graph_x_scale_factor, 
+                                (i+1)*graph_y_scale_factor,
+                                (optimizer_output[i+1][0]-datetime.date.today()).total_seconds()/seconds_per_hour - graph_x_scale_factor,
+                                dash=(4,4))
+
+            print optimizer_output[i][1], optimizer_output[i][2], optimizer_output[i][3]
+            plot.create_line(   i*graph_y_scale_factor,
+                                (optimizer_output[i][0]-datetime.date.today()).total_seconds()/seconds_per_hour - graph_x_scale_factor, 
+                                (i+1)*graph_y_scale_factor,
+                                (optimizer_output[i+1][0]-datetime.date.today()).total_seconds()/seconds_per_hour - graph_x_scale_factor,
+                                dash=(4,4))
+
+        print find_max, find_min, find_max-find_min
     return
 
 if __name__ == '__main__':  
@@ -133,6 +173,8 @@ if __name__ == '__main__':
     global start_date
 
     global cf_list
+    global plot
+    global optimizer_output
 
     mortgage_maturity = datetime.date(2044,10,1)
     mortgage_payment = 1923.88 - 729.74
@@ -249,6 +291,12 @@ if __name__ == '__main__':
     cf_list.pack(side='right',fill='both',expand=1)
     for i in monthly_cashflow:
         cf_list.insert('end',i)
+
+    graph_output = TK.Toplevel()
+    graph_output.title("Graph Output")
+    plot = TK.Canvas(graph_output,width=1000,height=5000)
+    plot.pack()
+    plot.create_line(0, 0, 200, 100)
 
     var_update('run')
 

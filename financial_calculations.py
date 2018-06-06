@@ -11,7 +11,7 @@ def mortgage_payoff_schedule(   start_date, mortgage_balance,
     
     while mortgage_balance > 0:
         if curr_date.day == 1:
-            interest_due = mortgage_balance * mortgage_interest_rate / 12
+            interest_due = mortgage_balance * mortgage_interest_rate / 12   
             mortgage_interest_paid += interest_due
             principle_paid = mortgage_payment - interest_due + extra_payment_amt
             mortgage_balance = mortgage_balance - principle_paid
@@ -72,6 +72,6 @@ def mortgage_optimize(start_date,
         
         curr_date += datetime.timedelta(days=1)
 
-    print "Mortgage Paid Off"
-    print curr_date, mortgage_balance, heloc_balance, mortgage_interest_paid + heloc_interest_paid
-    return curr_date, mortgage_balance, heloc_balance
+    # print "Mortgage Paid Off"
+    # print curr_date, mortgage_balance, heloc_balance, mortgage_interest_paid + heloc_interest_paid
+    return curr_date, mortgage_balance, heloc_balance, mortgage_interest_paid + heloc_interest_paid
